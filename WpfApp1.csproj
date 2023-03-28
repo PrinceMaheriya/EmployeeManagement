@@ -105,5 +105,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="bin\Debug\Newtonsoft.Json.dll" />
+    <Content Include="bin\Debug\System.Net.Http.Formatting.dll" />
+    <Resource Include="bin\Debug\System.Net.Http.Formatting.xml" />
+    <Resource Include="bin\Debug\Newtonsoft.Json.xml" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
