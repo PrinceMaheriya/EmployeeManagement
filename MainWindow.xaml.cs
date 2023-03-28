@@ -27,8 +27,7 @@ namespace WpfApp1
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly string baseUrl = ConfigurationManager.AppSettings.Get("ApiBaseUrl");
-        private readonly string token = ConfigurationManager.AppSettings.Get("Token");
+        
     
 
         public MainWindow()
@@ -49,28 +48,7 @@ namespace WpfApp1
             try
             {
                 ClearFields();
-
-                HttpClient client = new HttpClient();
-
-                client.BaseAddress = new Uri(baseUrl);
-
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                HttpResponseMessage responseMessage = client.GetAsync("users").Result;
-
-                if(responseMessage.IsSuccessStatusCode)
-                {
-                    var emplyeeDetails = responseMessage.Content.ReadAsAsync<EmployeeModel>().Result;
-                    grdEmployee.ItemsSource = emplyeeDetails.Data;
-
-                }
-                else
-                {
-                    MessageBox.Show($"Error Code: {responseMessage.StatusCode} message: {responseMessage.ReasonPhrase}");
-                }
-
+                grdEmployee.ItemsSource = EmployeeService.GetEmployeeData();
             }
             catch(Exception ex)
             {
@@ -94,7 +72,7 @@ namespace WpfApp1
             }
             else
             {
-                isValidEmail = EmailService.IsValidEmail(txtEmail.Text);
+                isValidEmail = Common.IsValidEmail(txtEmail.Text);
 
                 if(!isValidEmail)
                 {
@@ -161,27 +139,10 @@ namespace WpfApp1
         {
             try
             {
-                HttpClient client = new HttpClient();
-
-                client.BaseAddress = new Uri(baseUrl);
-
-                client.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
-
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                HttpResponseMessage response = client.DeleteAsync($"users/{txtId.Text}").Result;
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var result = response.Content.ReadAsStringAsync();
-
-                    BindEmployeeGrid();
-
-                    MessageBox.Show("Record deleted successfully.");
-                }
-
+                EmployeeService.DeleteEmployeeData(Convert.ToInt32(txtId.Text));
+                BindEmployeeGrid();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show("Unable to delete the record atm please try again later." 
                     +Environment.NewLine +"Error Detail: "+ex.Message);
@@ -204,22 +165,11 @@ namespace WpfApp1
                     empDetail.Email = txtEmail.Text;
                     empDetail.Gender = rdbtMale.IsChecked == true ? Common.male : Common.female;
                     empDetail.Status = cbStatus.IsChecked == true ? Common.active : Common.inactive;
-                    string json = JsonConvert.SerializeObject(empDetail);
 
-                    HttpClient client = new HttpClient();
-
-                    client.BaseAddress = new Uri(baseUrl);
-
-                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                    var response = client.PostAsJsonAsync("users", empDetail).Result;
+                    var response = EmployeeService.AddEmployee(empDetail);
 
                     if (response.IsSuccessStatusCode)
                     {
-                        string result = response.Content.ReadAsStringAsync().Result;
-
                         BindEmployeeGrid();
 
                         response.Dispose();
@@ -239,27 +189,14 @@ namespace WpfApp1
             {
                 if(!string.IsNullOrWhiteSpace(txtId.Text))
                 {
-                    HttpClient client = new HttpClient();
 
-                    client.BaseAddress = new Uri(baseUrl);
+                    var employeeDetail = EmployeeService.GetEmployeeDetails(Convert.ToInt32(txtId.Text));
 
-                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-                    var response = client.GetAsync($"users/{txtId.Text}").Result;
-
-                    if(response.IsSuccessStatusCode)
+                    if (!string.IsNullOrWhiteSpace(employeeDetail.Email))
                     {
-                      var result =  response.Content.ReadAsAsync<SingleEmplyee>().Result;
-
-                        var employeeDetail = result.Data;
-
-                        if(!string.IsNullOrWhiteSpace(employeeDetail.Email))
-                        {
-                            loadFieldsData(result.Data);
-                        }
+                        loadFieldsData(employeeDetail);
                     }
+                    
                 }
                 else
                 {
@@ -268,7 +205,7 @@ namespace WpfApp1
             }
             catch(Exception ex)
             {
-                MessageBox.Show("Unable to fetch employee detail atm please try again afater sometime." + Environment.NewLine + "Error Details: " + ex.Message
+                MessageBox.Show("Unable to fetch employee detail atm please try again after sometime." + Environment.NewLine + "Error Details: " + ex.Message
                     );
             }
         }
@@ -281,32 +218,19 @@ namespace WpfApp1
                 var isValidEmail = ValidateEmail();
 
                 if (!isValidEmail) return;
+                
+                Datum empDetail = new Datum();
 
-                using (HttpClient client = new HttpClient())
-                {
-                    Datum empDetail = new Datum();
+                empDetail.Id = Convert.ToInt64(txtId.Text);
+                empDetail.Name = txtName.Text;
+                empDetail.Email = txtEmail.Text;
+                empDetail.Gender = rdbtMale.IsChecked == true ? Common.male : Common.female;
+                empDetail.Status = cbStatus.IsChecked == true ? Common.active : Common.inactive;
 
-                    empDetail.Id = Convert.ToInt64(txtId.Text);
-                    empDetail.Name = txtName.Text;
-                    empDetail.Email = txtEmail.Text;
-                    empDetail.Gender = rdbtMale.IsChecked == true ? Common.male : Common.female;
-                    empDetail.Status = cbStatus.IsChecked == true ? Common.active : Common.inactive;
+                EmployeeService.UpdateEmployeeDetailsAsync(empDetail);
 
-                    client.BaseAddress = new Uri(baseUrl);
-                    client.Timeout = TimeSpan.FromSeconds(900);
-                    client.DefaultRequestHeaders.Accept.Clear();
-                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                    var response = client.PutAsJsonAsync("users", empDetail).Result;
+                BindEmployeeGrid();
 
-                    if(response.IsSuccessStatusCode)
-                    {
-                        MessageBox.Show("Employee Details updated successfully.");
-                    }
-                    else
-                    {
-                        MessageBox.Show("Unable to update the employee details atm please connect to the IT support team.");
-                    }
-                }
             }
             catch(Exception ex)
             {
