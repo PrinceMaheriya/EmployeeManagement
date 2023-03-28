@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 namespace WpfApp1
 {
   
-    public partial class EmployeeModel
+    public  class EmployeeModel
     {
         [JsonProperty(PropertyName = "code")]
         public long Code { get; set; }
@@ -20,7 +20,7 @@ namespace WpfApp1
         public List<Datum> Data { get; set; }
     }
 
-    public partial class SingleEmplyee
+    public  class SingleEmplyee
     {
         [JsonProperty(PropertyName = "code")]
         public long Code { get; set; }
@@ -31,7 +31,7 @@ namespace WpfApp1
         [JsonProperty(PropertyName = "data")]
         public Datum Data { get; set; }
     }
-    public partial class Datum
+    public  class Datum
     {
         [JsonProperty(PropertyName = "id")]
         public long? Id { get; set; }
@@ -49,13 +49,13 @@ namespace WpfApp1
         public string Status { get; set; }
     }
 
-    public partial class Meta
+    public  class Meta
     {
         [JsonProperty(PropertyName = "pagination")]
         public Pagination Pagination { get; set; }
     }
 
-    public partial class Pagination
+    public  class Pagination
     {
         [JsonProperty(PropertyName = "total")]
         public long Total { get; set; }
