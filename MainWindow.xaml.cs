@@ -27,15 +27,20 @@ namespace WpfApp1
     /// </summary>
     public partial class MainWindow : Window
     {
-        
-    
+
+        List<Datum> myList = new List<Datum>();
+
+        long totalPages = 0;
+        long currentPage = 1;
+        long totalRecords = 0;
+        long pageLimit = 10;
 
         public MainWindow()
         {
             InitializeComponent();
             EnableDisableButton();
-            BindEmployeeGrid();
-            
+            BindEmployeeGrid(1);
+            EnableDisablePageButtons(PagingMode.First);
         }
 
         #region functions
@@ -43,12 +48,22 @@ namespace WpfApp1
         /// <summary>
         /// This function is used to bind all the employee detail with grid
         /// </summary>
-        private void BindEmployeeGrid()
+        private void BindEmployeeGrid(long pageNo)
         {
             try
             {
                 ClearFields();
-                grdEmployee.ItemsSource = EmployeeService.GetEmployeeData();
+
+                EmployeeModel emp = EmployeeService.GetEmployeeData(pageNo);
+
+                totalRecords = emp.Meta.Pagination.Total;
+                totalPages = emp.Meta.Pagination.Pages;
+                currentPage = emp.Meta.Pagination.Page;
+                myList = emp.Data;
+
+                grdEmployee.ItemsSource = emp.Data;
+
+                SetEmpGridPage();
             }
             catch(Exception ex)
             {
@@ -56,6 +71,14 @@ namespace WpfApp1
             }
         }
 
+        /// <summary>
+        /// This function is used to set the Employee Grid page content
+        /// </summary>
+        private void SetEmpGridPage()
+        {
+            var records = currentPage == totalPages ? totalRecords : currentPage * pageLimit;
+            lblpageInformation.Content = records + " of " + totalRecords;
+        }
 
         /// <summary>
         /// this function is used to validate the email 
@@ -140,7 +163,7 @@ namespace WpfApp1
             try
             {
                 EmployeeService.DeleteEmployeeData(Convert.ToInt32(txtId.Text));
-                BindEmployeeGrid();
+                BindEmployeeGrid(1);
             }
             catch (Exception ex)
             {
@@ -170,7 +193,7 @@ namespace WpfApp1
 
                     if (response.IsSuccessStatusCode)
                     {
-                        BindEmployeeGrid();
+                        BindEmployeeGrid(1);
 
                         response.Dispose();
                     }
@@ -229,7 +252,7 @@ namespace WpfApp1
 
                 EmployeeService.UpdateEmployeeDetailsAsync(empDetail);
 
-                BindEmployeeGrid();
+                BindEmployeeGrid(1);
 
             }
             catch(Exception ex)
@@ -244,6 +267,70 @@ namespace WpfApp1
            e.Handled =  Common.IsTextAllowed(e.Text);
         }
 
+        #endregion
+
+        #region Pagination Event
+
+        private enum PagingMode {First, Last, Next, Previous};
+
+        private void EnableDisablePageButtons(PagingMode pg)
+        {
+            btnFirst.IsEnabled = true;
+            btnLast.IsEnabled = true;
+            btnNext.IsEnabled = true;
+            btnPrev.IsEnabled = true;
+
+            switch(pg)
+            {
+                case PagingMode.First:
+                    btnFirst.IsEnabled = false;
+                    btnPrev.IsEnabled = false;
+                    break;
+                case PagingMode.Last:
+                    btnLast.IsEnabled = false;
+                    btnNext.IsEnabled = false;
+                    break;
+                case PagingMode.Next:
+                    if(currentPage == totalPages)
+                    {
+                        btnLast.IsEnabled = false;
+                        btnNext.IsEnabled = false;
+                    }
+                    break;
+                case PagingMode.Previous:
+                    if (currentPage == 1)
+                    {
+                        btnFirst.IsEnabled = false;
+                        btnPrev.IsEnabled = false;
+                    }
+                    break;
+            }
+        }
+
+        private void btnFirst_Click(object sender, System.EventArgs e)
+        {
+            BindEmployeeGrid(1);
+            EnableDisablePageButtons(PagingMode.First);
+        }
+
+        private void btnNext_Click(object sender, System.EventArgs e)
+        {
+            BindEmployeeGrid(currentPage + 1);
+            EnableDisablePageButtons(PagingMode.Next);
+        }
+
+        private void btnPrev_Click(object sender, System.EventArgs e)
+        {
+            BindEmployeeGrid(currentPage - 1);
+            EnableDisablePageButtons(PagingMode.Previous);
+        }
+
+        private void btnLast_Click(object sender, System.EventArgs e)
+        {
+            BindEmployeeGrid(totalPages);
+            EnableDisablePageButtons(PagingMode.Last);
+        }
+        
         #endregion
     }
 }

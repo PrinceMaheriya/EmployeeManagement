@@ -8,38 +8,63 @@
         Title="MainWindow" Height="450" Width="800">
     <Grid Margin="0,0,0,-2" Height="421" VerticalAlignment="Top">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="46*"/>
+            <ColumnDefinition Width="5*"/>
+            <ColumnDefinition Width="41*"/>
             <ColumnDefinition Width="177*"/>
             <ColumnDefinition Width="173*"/>
         </Grid.ColumnDefinitions>
-        <DataGrid HorizontalAlignment="Left" Height="196" Margin="32,189,0,0" VerticalAlignment="Top" Width="728" Grid.ColumnSpan="3" x:Name="grdEmployee" RenderTransformOrigin="0.501,0.926"/>
-        <Label Content="Email" HorizontalAlignment="Left" Margin="0,89,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.635,1.632" Grid.Column="1"/>
-        <Label Content="Gender" HorizontalAlignment="Left" Margin="0,122,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.458,1.752" Grid.Column="1"/>
-        <Label Content="Name" HorizontalAlignment="Left" Margin="92,63,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.59,1.31" Grid.ColumnSpan="2"/>
-        <RadioButton Content="Male" HorizontalAlignment="Left" Margin="88,128,0,0" VerticalAlignment="Top" Height="27"  x:Name="rdbtMale" GroupName="Gender" RenderTransformOrigin="0.573,1.465" Grid.Column="1"/>
-        <RadioButton Content="Female" HorizontalAlignment="Left" Margin="138,128,0,0" VerticalAlignment="Top" Height="27"  x:Name="rdbtFemale" GroupName="Gender" Grid.Column="1" RenderTransformOrigin="0.518,0.877"/>
-        <TextBox HorizontalAlignment="Left" Height="23" Margin="87.531,65,0,0" TextWrapping="Wrap" Text="" MaxLength="255" VerticalAlignment="Top" Width="120" x:Name="txtName" Grid.Column="1"/>
-        <TextBox HorizontalAlignment="Left" Height="23" Margin="88,93,0,0" TextWrapping="Wrap" Text="" MaxLength="255" VerticalAlignment="Top" Width="256" x:Name="txtEmail" Grid.Column="1"/>
-        <Button Content="Insert" HorizontalAlignment="Left" Margin="92,164,0,0" VerticalAlignment="Top" Width="75" x:Name="btnInsert" Click="BtnInsert_Click" RenderTransformOrigin="0.479,1.485" Grid.ColumnSpan="2"/>
-        <Button Content="Update" HorizontalAlignment="Left" Margin="102.531,164,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.256,0.378" x:Name="btnUpdate" Click="BtnUpdate_Click" Grid.Column="1"/>
-        <Button Content="Delete" HorizontalAlignment="Left" Margin="209.531,164,0,0" VerticalAlignment="Top" Width="75" Click="btnDelete_Click" x:Name="btnDelete" RenderTransformOrigin="0.256,1.06" Grid.Column="1"/>
-        <Button Content="Search" HorizontalAlignment="Left" Margin="269,37,0,0" VerticalAlignment="Top" Width="75" x:Name="btnSearch" Click="BtnSearch_Click" Grid.Column="1"/>
-        <Button Content="Clear All" HorizontalAlignment="Left" Margin="317.531,164,0,0" VerticalAlignment="Top"  Width="75" Click="ClearAll_Click" RenderTransformOrigin="-3.383,1.787" Grid.ColumnSpan="2" Grid.Column="1"/>
-        <Label Content="Id" HorizontalAlignment="Left" Margin="92,34,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.086,0.464" Grid.ColumnSpan="2"/>
-        <TextBox HorizontalAlignment="Left" Height="23" Margin="87.531,37,0,0" TextWrapping="Wrap" Text="" PreviewTextInput="txtId_PreviewTextInput" VerticalAlignment="Top" Width="120" RenderTransformOrigin="0.511,1.26" x:Name="txtId" Grid.Column="1"/>
-        <Label Content="Status" HorizontalAlignment="Left" Margin="238,117,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.019,0.036" Grid.Column="1"/>
-        <CheckBox Content="Active" Margin="284,123,0,0" VerticalAlignment="Top" Width="70" HorizontalAlignment="Left" x:Name="cbStatus" Grid.Column="1"/>
-        <Border BorderBrush="Black" BorderThickness="1" Grid.ColumnSpan="3" HorizontalAlignment="Left" Height="392" Margin="13,-172,0,0" VerticalAlignment="Top" Width="763" RenderTransformOrigin="0.493,0.755">
+        <DataGrid HorizontalAlignment="Left" Height="196" Margin="22.466,189,0,0" VerticalAlignment="Top" Width="728" Grid.ColumnSpan="3" x:Name="grdEmployee" RenderTransformOrigin="0.501,0.926" Grid.Column="1"/>
+        <StackPanel Orientation="Horizontal" 
+            HorizontalAlignment="Left" Margin="22,0,0,10" Width="268" Height="26" VerticalAlignment="Bottom" Grid.ColumnSpan="2" Grid.Column="1" RenderTransformOrigin="0.959,0.551">
+            <Button Height="23" HorizontalAlignment="Left"  
+                x:Name="btnFirst" VerticalAlignment="Bottom" 
+                Width="40" Content="&lt;&lt;" 
+                Click="btnFirst_Click" Opacity="0.75" RenderTransformOrigin="4.04,0.351"/>
+            <Button Height="23"  VerticalAlignment="Bottom" 
+                Name="btnPrev" Width="40" Click="btnPrev_Click" 
+                Opacity="0.75" Content="&lt;"/>
+
+            <Label x:Name="lblpageInformation" 
+                HorizontalContentAlignment="Center" 
+                HorizontalAlignment="Left" Height="30" 
+                Width="100" VerticalContentAlignment="Center" 
+                VerticalAlignment="Bottom"/>
+            <Button Height="23" HorizontalAlignment="Right" 
+                Name="btnNext" VerticalAlignment="Bottom" 
+                Width="40" Content="&gt;" 
+                Click="btnNext_Click" Opacity="0.75" RenderTransformOrigin="0.428,-0.605"/>
+            <Button HorizontalAlignment="Right" Width="54" 
+                x:Name="btnLast" Click="btnLast_Click" 
+                Opacity="0.75" Content="&gt;&gt;" RenderTransformOrigin="1.881,0.499" Height="23" VerticalAlignment="Bottom"/>
+        </StackPanel>
+        <Label Content="Email" HorizontalAlignment="Left" Margin="0,89,0,0" RenderTransformOrigin="0.635,1.632" Grid.Column="2" Height="26" VerticalAlignment="Top"/>
+        <Label Content="Gender" HorizontalAlignment="Left" Margin="0,122,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.458,1.752" Grid.Column="2"/>
+        <Label Content="Name" HorizontalAlignment="Left" Margin="0,63,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.59,1.31" Grid.Column="2"/>
+        <RadioButton Content="Male" HorizontalAlignment="Left" Margin="88,128,0,0" VerticalAlignment="Top" Height="27"  x:Name="rdbtMale" GroupName="Gender" RenderTransformOrigin="0.573,1.465" Grid.Column="2"/>
+        <RadioButton Content="Female" HorizontalAlignment="Left" Margin="138,128,0,0" VerticalAlignment="Top" Height="27"  x:Name="rdbtFemale" GroupName="Gender" Grid.Column="2" RenderTransformOrigin="0.518,0.877"/>
+        <TextBox HorizontalAlignment="Left" Height="23" Margin="88,65,0,0" TextWrapping="Wrap" Text="" MaxLength="255" VerticalAlignment="Top" Width="120" x:Name="txtName" Grid.Column="2"/>
+        <TextBox HorizontalAlignment="Left" Height="23" Margin="88,93,0,0" TextWrapping="Wrap" Text="" MaxLength="255" VerticalAlignment="Top" Width="256" x:Name="txtEmail" Grid.Column="2"/>
+        <Button Content="Insert" HorizontalAlignment="Left" Margin="0,164,0,0" VerticalAlignment="Top" Width="75" x:Name="btnInsert" Click="BtnInsert_Click" RenderTransformOrigin="0.479,1.485" Grid.Column="2"/>
+        <Button Content="Update" HorizontalAlignment="Left" Margin="103,164,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.256,0.378" x:Name="btnUpdate" Click="BtnUpdate_Click" Grid.Column="2"/>
+        <Button Content="Delete" HorizontalAlignment="Left" Margin="210,164,0,0" VerticalAlignment="Top" Width="75" Click="btnDelete_Click" x:Name="btnDelete" RenderTransformOrigin="0.256,1.06" Grid.Column="2"/>
+        <Button Content="Search" HorizontalAlignment="Left" Margin="269,37,0,0" VerticalAlignment="Top" Width="75" x:Name="btnSearch" Click="BtnSearch_Click" Grid.Column="2"/>
+        <Button Content="Clear All" HorizontalAlignment="Left" Margin="318,164,0,0" VerticalAlignment="Top"  Width="75" Click="ClearAll_Click" RenderTransformOrigin="-3.383,1.787" Grid.ColumnSpan="2" Grid.Column="2"/>
+        <Label Content="Id" HorizontalAlignment="Left" Margin="0,34,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.086,0.464" Grid.Column="2"/>
+        <TextBox HorizontalAlignment="Left" Height="23" Margin="88,37,0,0" TextWrapping="Wrap" Text="" PreviewTextInput="txtId_PreviewTextInput" VerticalAlignment="Top" Width="120" RenderTransformOrigin="0.511,1.26" x:Name="txtId" Grid.Column="2"/>
+        <Label Content="Status" HorizontalAlignment="Left" Margin="238,117,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.019,0.036" Grid.Column="2"/>
+        <CheckBox Content="Active" Margin="284,123,0,0" VerticalAlignment="Top" Width="70" HorizontalAlignment="Left" x:Name="cbStatus" Grid.Column="2"/>
+        <Border BorderBrush="Black" BorderThickness="1" Grid.ColumnSpan="3" HorizontalAlignment="Left" Height="384" Margin="3,1,0,0" VerticalAlignment="Top" Width="763" RenderTransformOrigin="0.499,0.71" Grid.Column="1">
             <Border.RenderTransform>
                 <TransformGroup>
-                    <ScaleTransform ScaleY="-1"/>
+                    <ScaleTransform/>
                     <SkewTransform/>
                     <RotateTransform/>
-                    <TranslateTransform/>
+                    <TranslateTransform Y="25.56"/>
                 </TransformGroup>
             </Border.RenderTransform>
         </Border>
-        <Label Content="Employee Details" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Width="157" Height="29"/>
+        <Label Content="Employee Details" HorizontalAlignment="Left" Margin="0.466,0,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Width="157" Height="29" Grid.Column="1"/>
 
     </Grid>
+
 </Window>

@@ -18,7 +18,7 @@ namespace WpfApp1.Helper
         /// This method is used to fetch all the employee data
         /// </summary>
         /// <returns></returns>
-        public static List<Datum> GetEmployeeData()
+        public static EmployeeModel GetEmployeeData(long pageNo)
         {
             try
             {
@@ -30,12 +30,12 @@ namespace WpfApp1.Helper
 
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                    HttpResponseMessage responseMessage = client.GetAsync("users").Result;
+                    HttpResponseMessage responseMessage = client.GetAsync($"users?page="+ pageNo).Result;
 
                     if (responseMessage.IsSuccessStatusCode)
                     {
                         var emplyeeDetails = responseMessage.Content.ReadAsAsync<EmployeeModel>().Result;
-                        return emplyeeDetails.Data; ;
+                        return emplyeeDetails; ;
                     }
                     else
                     {
@@ -146,7 +146,7 @@ namespace WpfApp1.Helper
             }
             catch(Exception ex)
             {
-                MessageBox.Show($"Unable to update the employee details atm, please connect to the IT support team.{Environment.NewLine} Error Detail : {ex.Message}");
+                throw ex;
             }
           
         }
@@ -157,20 +157,28 @@ namespace WpfApp1.Helper
         /// <param name="employeeId"></param>
         public static void DeleteEmployeeData(int employeeId)
         {
-            using (HttpClient client = new HttpClient())
+            try
             {
-                client.BaseAddress = new Uri(baseUrl);
-
-                client.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
-
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                HttpResponseMessage response = client.DeleteAsync($"users/{employeeId}").Result;
-
-                if (response.IsSuccessStatusCode)
+                using (HttpClient client = new HttpClient())
                 {
-                    MessageBox.Show("Record deleted successfully.");
+                    client.BaseAddress = new Uri(baseUrl);
+
+                    client.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    HttpResponseMessage response = client.DeleteAsync($"users/{employeeId}").Result;
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        MessageBox.Show("Record deleted successfully.");
+                    }
                 }
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Unable to delete employee detail atm.");
             }
         }
     }
